@@ -195,7 +195,7 @@ int main(int argc, char** argv) {
     }
 
     // Define image sizes to test
-    vector<int> sizes = {2048, 4096, 8152};
+    vector<int> sizes = {2048, 4096, 8192, 16384, 32768};
 
     // Initialize vectors to store performance data
     vector<double> times_simd;
