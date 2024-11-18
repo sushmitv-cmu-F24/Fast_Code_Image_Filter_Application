@@ -23,6 +23,7 @@ set(GCC_FLAGS -O3 -mavx -mfma)
 
 # Add executable
 add_executable(average_filter average_filter.cpp)
+add_executable(gaussian_filter gaussian_filter.cpp)
 
 # Add compiler flags to the target
 target_compile_options(average_filter PRIVATE ${GCC_FLAGS})
