@@ -1,7 +1,9 @@
 #include <opencv2/opencv.hpp>
 #include <immintrin.h>
 #include <iostream>
+#include <fstream>
 #include <omp.h>  // Include OpenMP header
+#include <vector>
 
 using namespace cv;
 using namespace std;
@@ -192,40 +194,83 @@ int main(int argc, char** argv) {
         return -1;
     }
 
-    // Convert image to float32
-    Mat img_float;
-    img.convertTo(img_float, CV_32F);
+    // Define image sizes to test
+    vector<int> sizes = {2048, 4096, 8152};
 
-    // Intermediate image for the separable filter
-    Mat intermediate = Mat::zeros(img_float.size(), CV_32F);
+    // Initialize vectors to store performance data
+    vector<double> times_simd;
+    vector<double> times_opencv;
+    vector<double> gflops_simd;
 
-    // Initialize output images
-    Mat output_simd = Mat::zeros(img_float.size(), CV_32F);
-    Mat output_opencv;
+    for (int size : sizes) {
+        // Resize image to current size
+        Mat img_resized;
+        resize(img, img_resized, Size(size, size));
 
-    // Apply SIMD separable filter implementation and measure the time
-    int64 t1 = getTickCount();
-    vertical_blur_optimized(img_float, intermediate);
-    horizontal_blur_optimized(intermediate, output_simd);
-    double time_simd = (getTickCount() - t1) / getTickFrequency();
+        // Convert image to float32
+        Mat img_float;
+        img_resized.convertTo(img_float, CV_32F);
 
-    // Convert SIMD output back to 8-bit for comparison and saving
-    Mat output_simd_8U;
-    output_simd.convertTo(output_simd_8U, CV_8U);
-    imwrite("../output_simd.jpg", output_simd_8U);
+        // Intermediate image for the separable filter
+        Mat intermediate = Mat::zeros(img_float.size(), CV_32F);
 
-    // Apply OpenCV implementation and measure the time
-    t1 = getTickCount();
-    blur(img, output_opencv, Size(5, 5));
-    double time_opencv = (getTickCount() - t1) / getTickFrequency();
+        // Initialize output images
+        Mat output_simd = Mat::zeros(img_float.size(), CV_32F);
+        Mat output_opencv;
 
-    // Save OpenCV output
-    imwrite("../output_opencv.jpg", output_opencv);
+        // Apply SIMD separable filter implementation and measure the time
+        int64 t1 = getTickCount();
+        vertical_blur_optimized(img_float, intermediate);
+        horizontal_blur_optimized(intermediate, output_simd);
+        double time_simd = (getTickCount() - t1) / getTickFrequency();
 
-    // Display comparison results
-    cout << "Performance comparison:" << endl;
-    cout << "SIMD implementation time: " << time_simd << " seconds" << endl;
-    cout << "OpenCV implementation time: " << time_opencv << " seconds" << endl;
+        // Compute total FLOPs
+        // Assuming 20 FLOPs per pixel (10 per pass)
+        int width = img_float.cols;
+        int height = img_float.rows;
+        double total_flops = static_cast<double>(width) * height * 20;
+
+        // Compute GFLOPS achieved
+        double gflops = (total_flops / time_simd) / 1e9;
+
+        // Store performance data
+        times_simd.push_back(time_simd);
+        gflops_simd.push_back(gflops);
+
+        // Apply OpenCV implementation and measure the time
+        t1 = getTickCount();
+        blur(img_resized, output_opencv, Size(5, 5));
+        double time_opencv = (getTickCount() - t1) / getTickFrequency();
+
+        times_opencv.push_back(time_opencv);
+
+        // Output performance data
+        cout << "Image size: " << size << " x " << size << endl;
+        cout << "SIMD implementation time: " << time_simd << " seconds" << endl;
+        cout << "GFLOPS achieved: " << gflops << endl;
+        cout << "OpenCV blur time: " << time_opencv << " seconds" << endl;
+        cout << "-------------------------------" << endl;
+
+        // Save SIMD output image for verification
+        // Convert SIMD output back to 8-bit for saving
+        Mat output_simd_8U;
+        output_simd.convertTo(output_simd_8U, CV_8U);
+        string filename_simd = "../output_images/output_simd_" + to_string(size) + "x" + to_string(size) + ".jpg";
+        imwrite(filename_simd, output_simd_8U);
+
+        // Save OpenCV output image for verification
+        // Since output_opencv is already in 8-bit format, we can save it directly
+        string filename_opencv = "../output_images/output_opencv_" + to_string(size) + "x" + to_string(size) + ".jpg";
+        imwrite(filename_opencv, output_opencv);
+    }
+
+    // Optionally, you can write the performance data to a file for plotting
+    ofstream outfile("../performance_data.txt");
+    outfile << "Size\tTime_SIMD(s)\tGFLOPS\tTime_OpenCV(s)\n";
+    for (size_t i = 0; i < sizes.size(); ++i) {
+        outfile << sizes[i] << "\t" << times_simd[i] << "\t" << gflops_simd[i] << "\t" << times_opencv[i] << "\n";
+    }
+    outfile.close();
 
     return 0;
 }
