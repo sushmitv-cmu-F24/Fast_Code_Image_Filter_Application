@@ -19,7 +19,7 @@ set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Set compiler flags as a list (remove quotes)
-set(GCC_FLAGS -O3 -mavx -mfma)
+set(GCC_FLAGS -O3 -mavx -mfma -march=native)
 
 # Add executable
 add_executable(average_filter average_filter.cpp)
