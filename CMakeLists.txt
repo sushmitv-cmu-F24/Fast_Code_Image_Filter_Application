@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.1)
 project(ImageFilterProject)
 
 # Set OpenCV directory if needed
-set(OpenCV_DIR path/to/build)
+set(OpenCV_DIR /afs/ece/user/pbhatnag/Private/Fast_Code_Image_Filter_Application/build)
 
 # Find OpenCV
 find_package(OpenCV REQUIRED)

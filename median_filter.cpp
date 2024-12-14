@@ -64,7 +64,7 @@ void median_blur_kernel(const Mat& input, Mat& output) {
 
 int main(int argc, char** argv) {
     // Load input image in grayscale
-    Mat img = imread("input.jpg", IMREAD_GRAYSCALE);
+    Mat img = imread("../input.jpg", IMREAD_GRAYSCALE);
     if (img.empty()) {
         cerr << "Error: Could not load image!" << endl;
         return -1;

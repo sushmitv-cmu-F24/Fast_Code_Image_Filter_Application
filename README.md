@@ -1,3 +1,5 @@
+# Code tested on ece027
+
 # Fast_Code_Image_Filter_Application
 C codes for Image filtering algorithms (Averaging, Gaussian and Median) which are efficient and created using multiple techniques including SIMD instructions, Kernel design, Benchmarking and more
 
@@ -13,4 +15,6 @@ set(OpenCV_DIR /path/to/opencv/build)
 5. ./gaussian_filter
 6. ./median_filter
 ```
-#### Check output_opencv.jpg & output_simd.jpg for final results
+#### Check avg_kernel_output_images and gaussian_ker_output_images for output images
+#### Check average_performance_data and gaussian_performance_data for performance results
+

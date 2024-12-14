@@ -229,11 +229,11 @@ int main(int argc, char** argv) {
 
         Mat output_simd_8U;
         output_simd.convertTo(output_simd_8U, CV_8U);
-        imwrite("../output_images/output_simd_" + to_string(size) + ".jpg", output_simd_8U);
-        imwrite("../output_images/output_opencv_" + to_string(size) + ".jpg", output_opencv);
+        imwrite("../avg_kernel_output_images/output_simd_" + to_string(size) + ".jpg", output_simd_8U);
+        imwrite("../avg_kernel_output_images/output_opencv_" + to_string(size) + ".jpg", output_opencv);
     }
 
-    ofstream outfile("../performance_data.txt");
+    ofstream outfile("../average_performance_data.txt");
     outfile << "Size\tTime_SIMD(s)\tGFLOPs/cycle\tTime_OpenCV(s)\n";
     for (size_t i = 0; i < sizes.size(); ++i) {
         outfile << sizes[i] << "\t" << times_simd[i] << "\t" << gflops_per_cycle[i] << "\t" << times_opencv[i] << "\n";

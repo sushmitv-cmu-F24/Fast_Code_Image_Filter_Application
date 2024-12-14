@@ -265,7 +265,7 @@ int main(int argc, char** argv) {
     vector<double> gflops_per_cycle;
 
     // Open output file to log performance data
-    ofstream outfile("../performance_data.txt");
+    ofstream outfile("../gaussian_performance_data.txt");
     if (!outfile.is_open()) {
         cerr << "Error: Could not open performance_data.txt for writing!" << endl;
         return -1;
@@ -325,12 +325,12 @@ int main(int argc, char** argv) {
         // Convert SIMD output back to 8-bit for saving
         Mat output_simd_8U;
         output_simd.convertTo(output_simd_8U, CV_8U);
-        imwrite("../output_images/output_simd_" + to_string(size) + ".jpg", output_simd_8U);
+        imwrite("../gaussian_ker_output_images/output_simd_" + to_string(size) + ".jpg", output_simd_8U);
 
         // Convert OpenCV output back to 8-bit for saving (if not already)
         Mat output_opencv_8U;
         output_opencv.convertTo(output_opencv_8U, CV_8U);
-        imwrite("../output_images/output_opencv_" + to_string(size) + ".jpg", output_opencv_8U);
+        imwrite("../gaussian_ker_output_images/output_opencv_" + to_string(size) + ".jpg", output_opencv_8U);
 
         // Write the metrics to the file
         outfile << size << "\t" << time_simd << "\t" << gflops_per_cyc << "\t" << time_opencv << "\n";
