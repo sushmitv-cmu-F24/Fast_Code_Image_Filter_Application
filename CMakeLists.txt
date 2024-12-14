@@ -24,12 +24,15 @@ set(GCC_FLAGS -O3 -mavx -mfma -march=native)
 # Add executable
 add_executable(average_filter average_filter.cpp)
 add_executable(gaussian_filter gaussian_filter.cpp)
+add_executable(median_filter median_filter.cpp)
 
 # Add compiler flags to the target
 target_compile_options(average_filter PRIVATE ${GCC_FLAGS})
 target_compile_options(gaussian_filter PRIVATE ${GCC_FLAGS})
+target_compile_options(median_filter PRIVATE ${GCC_FLAGS})
 
 # Link libraries
 target_link_libraries(average_filter PRIVATE ${OpenCV_LIBS} OpenMP::OpenMP_CXX)
 target_link_libraries(gaussian_filter PRIVATE ${OpenCV_LIBS} OpenMP::OpenMP_CXX)
+target_link_libraries(median_filter PRIVATE ${OpenCV_LIBS} OpenMP::OpenMP_CXX)
 
