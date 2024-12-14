@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.1)
 
-project(AverageFilterProject)
+project(ImageFilterProject)
 
 # Set OpenCV directory if needed
 set(OpenCV_DIR /afs/ece.cmu.edu/usr/sushmitv/Private/build/)
