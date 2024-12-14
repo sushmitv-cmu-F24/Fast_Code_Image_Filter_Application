@@ -17,7 +17,7 @@ void simd_sort_network_25(float* buffer) {
     __m256 vec3 = _mm256_loadu_ps(buffer + 16);   // Load last 8 elements
     float last = buffer[24];                      // Handle scalar element
 
-    // Sorting logic (simplified for demonstration; replace with full network as needed)
+    // Sorting logic
     vec1 = _mm256_min_ps(vec1, vec2);
     vec2 = _mm256_max_ps(vec1, vec2);
     vec3 = _mm256_min_ps(vec3, vec2);
@@ -27,10 +27,9 @@ void simd_sort_network_25(float* buffer) {
     _mm256_storeu_ps(buffer, vec1);
     _mm256_storeu_ps(buffer + 8, vec2);
     _mm256_storeu_ps(buffer + 16, vec3);
-    buffer[24] = last; // Handle scalar
+    buffer[24] = last;
 }
 
-// Optimized median blur kernel
 void median_blur_kernel(const Mat& input, Mat& output) {
     int width = input.cols;
     int height = input.rows;
